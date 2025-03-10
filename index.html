@@ -1,0 +1,105 @@
+<!-- HTML -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lost and Found Portal</title>
+    <style>
+        body { font-family: Arial, sans-serif; display: flex; flex-direction: column; align-items: center; padding: 20px; }
+        form { display: flex; flex-direction: column; gap: 10px; width: 300px; }
+        input, select, button { padding: 10px; width: 100%; }
+        .hidden { display: none; }
+        ul { list-style-type: none; padding: 0; width: 100%; max-width: 400px; }
+        li { background: #f3f3f3; margin: 5px 0; padding: 10px; border: 1px solid #ccc; }
+    </style>
+</head>
+<body>
+    <h1>Login to Lost and Found Portal</h1>
+
+    <form id="loginForm">
+        <input type="text" id="username" placeholder="Username" required>
+        <input type="password" id="password" placeholder="Password" required>
+        <button type="submit">Login</button>
+    </form>
+
+    <div id="portalContent" class="hidden">
+        <h1>Lost and Found Portal</h1>
+
+        <form id="itemForm">
+            <input type="text" id="title" placeholder="Title" required>
+            <input type="text" id="description" placeholder="Description" required>
+            <select id="category">
+                <option value="Electronics">Electronics</option>
+                <option value="Stationery">Stationery</option>
+                <option value="Clothing">Clothing</option>
+                <option value="Other">Other</option>
+            </select>
+            <select id="type">
+                <option value="Lost">Lost</option>
+                <option value="Found">Found</option>
+            </select>
+            <input type="text" id="contact" placeholder="Contact Info" required>
+            <button type="submit">Submit</button>
+        </form>
+
+        <input type="text" id="search" placeholder="Search items..." onkeyup="searchItems()">
+
+        <h2>Items</h2>
+        <ul id="itemsList"></ul>
+    </div>
+
+    <script>
+        const loginForm = document.getElementById('loginForm');
+        const portalContent = document.getElementById('portalContent');
+        const itemForm = document.getElementById('itemForm');
+        const itemsList = document.getElementById('itemsList');
+        const searchInput = document.getElementById('search');
+        const items = [];
+
+        loginForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            if (username === 'admin' && password === 'password') {
+                loginForm.classList.add('hidden');
+                portalContent.classList.remove('hidden');
+            } else {
+                alert('Invalid login credentials');
+            }
+        });
+
+        itemForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const newItem = {
+                title: document.getElementById('title').value,
+                description: document.getElementById('description').value,
+                category: document.getElementById('category').value,
+                type: document.getElementById('type').value,
+                contact: document.getElementById('contact').value
+            };
+            items.push(newItem);
+            displayItems();
+            itemForm.reset();
+        });
+
+        function displayItems(filter = "") {
+            itemsList.innerHTML = '';
+            items.filter(item => 
+                item.title.toLowerCase().includes(filter.toLowerCase()) ||
+                item.description.toLowerCase().includes(filter.toLowerCase()) ||
+                item.category.toLowerCase().includes(filter.toLowerCase())
+            ).forEach(item => {
+                const li = document.createElement('li');
+                li.textContent = `${item.title} - ${item.description} (${item.category}) - ${item.type} - Contact: ${item.contact}`;
+                itemsList.appendChild(li);
+            });
+        }
+
+        function searchItems() {
+            const filter = searchInput.value;
+            displayItems(filter);
+        }
+    </script>
+</body>
+</html>
